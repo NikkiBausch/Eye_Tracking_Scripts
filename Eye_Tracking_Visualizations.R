@@ -1,6 +1,10 @@
 df<- questionnaire
 QQs= data.frame(df$V1, df$V5, df$V6, df$V7, df$V8, df$V9, df$V10, df$V11, df$V12, df$V13, df$V14, df$V15, df$V16, df$V17, df$V18, df$V19, df$V20)
 library(viridis)
+library(lme4)
+library(jtools)
+library(rsq)
+library(car)
 col_selection <- viridis(5, option = "G")
 
 
@@ -71,4 +75,70 @@ hist(b3_Rank, breaks = 6, xlab = "Ranked Preference (in a scale of 1-4)", ylab =
 
 # Floral Pattern
 hist(b4_Rank, breaks = 6, xlab = "Ranked Preference (in a scale of 1-4)", ylab = "Number of Preferences Marked", xlim = c(0,4), main= "Overall Ranking Chosen (1 being the highest and 4 being the lowest)", col = col_selection5)
+
+
+# Distribution of Data for Saccadic Events 
+df2 <- Consolidated_Saccadic_Data
+df2 <- na.omit(df2)
+df2$AVERAGE_BLINK_DURATION <- gsub(",", ".", df2$AVERAGE_BLINK_DURATION)
+df2$AVERAGE_FIXATION_DURATION <- gsub(",", ".", df2$AVERAGE_FIXATION_DURATION)
+df2$DURATION <- as.numeric(df2$DURATION)
+df2$BLINK_COUNT <- as.numeric(df2$BLINK_COUNT)
+df2$AVERAGE_BLINK_DURATION <- as.numeric(df2$AVERAGE_BLINK_DURATION)
+#Average_Blink_Duration contains NAs. 
+df2$FIXATION_COUNT <- as.numeric(df2$FIXATION_COUNT)
+df2$MEDIAN_FIXATION_DURATION <- as.numeric(df2$MEDIAN_FIXATION_DURATION)
+df2$AVERAGE_FIXATION_DURATION <- as.numeric(df2$AVERAGE_FIXATION_DURATION)
+
+# Subsetting for each Book cover 
+B01= subset(df2, filename_book == "b01.png")
+B02 = subset(df2, filename_book == "b02.png")
+B03 = subset(df2, filename_book == "b03.png")
+B04 = subset(df2, filename_book == "b04.png")
+
+# Example Boxplot to see if this works: 
+boxplot(B01$BLINK_COUNT, xlab = "blink count", horizontal = TRUE, col = col_selection2)
+
+#Boxplots for all 4 separate book covers and columns 
+
+BX_Blink <- data.frame(B01$BLINK_COUNT, B02$BLINK_COUNT, B03$BLINK_COUNT, B04$BLINK_COUNT)
+
+boxplot(BX_Blink, xlab = "Blink Count", main = "Overall Blink Counts for Each Cover", horizontal = TRUE, col = col_selection3)
+
+BX_Fixation_Count <- data.frame(B01$FIXATION_COUNT, B02$FIXATION_COUNT, B03$FIXATION_COUNT, B04$FIXATION_COUNT)
+
+boxplot(BX_Fixation_Count, xlab = "Fixation Count", main = "Overall Fixation Counts for each Cover", horizontal = TRUE, col = col_selection3)
+
+BX_Median_Fixation <- data.frame(B01$MEDIAN_FIXATION_DURATION, B02$MEDIAN_FIXATION_DURATION, B03$MEDIAN_FIXATION_DURATION, B04$MEDIAN_FIXATION_DURATION)
+boxplot(BX_Median_Fixation, xlab = "Median Fixation Duration (in seconds)", main = "Overall Median Fixation Duration for each Book Cover", horizontal = TRUE, col = col_selection3)
+
+hist(df2$BLINK_COUNT, breaks = 4, xlab = "Blink Count (all)", main = "Visualization for Blink Count", col = "purple")
+hist(df2$FIXATION_COUNT, xlab = "Fixation Count (all)", main = "Visualization for Fixation Count", col = "purple")
+hist(df2$MEDIAN_FIXATION_DURATION, breaks = 4, xlab = "Median Fixation Duration (all)", main = "Visualization for Median Fixation duration", col = "purple")
+
+View(B01)
+View(B02)
+View(B03)
+View(B04)
+
+DescTools::Range(B01$BLINK_COUNT) # 0,23
+DescTools::Range(B02$BLINK_COUNT) # 0, 17
+DescTools::Range(B03$BLINK_COUNT) # 1, 16
+DescTools::Range(B04$BLINK_COUNT) # 0, 19
+DescTools::Range(B01$FIXATION_COUNT) # 40, 73
+DescTools::Range(B02$FIXATION_COUNT) # 32, 70 
+DescTools::Range(B03$FIXATION_COUNT) # 45, 74
+DescTools::Range(B04$FIXATION_COUNT) # 33, 75
+
+DescTools::Median(B01$BLINK_COUNT) # 3
+DescTools::Median(B02$BLINK_COUNT) # 4
+DescTools::Median(B03$BLINK_COUNT) # 3
+DescTools::Median(B04$BLINK_COUNT) # 4
+
+DescTools::Median(B01$FIXATION_COUNT) # 63
+DescTools::Median(B02$FIXATION_COUNT) # 61
+DescTools::Median(B03$FIXATION_COUNT) # 67
+DescTools::Median(B04$FIXATION_COUNT) # 58
+
+
 
