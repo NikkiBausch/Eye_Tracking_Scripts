@@ -79,7 +79,7 @@ hist(b4_Rank, breaks = 6, xlab = "Ranked Preference (in a scale of 1-4)", ylab =
 
 # Distribution of Data for Saccadic Events 
 df2 <- Consolidated_Saccadic_Data
-df2 <- na.omit(df2)
+df2 <- na.omit(df2$AVERAGE_BLINK_DURATION)
 df2$AVERAGE_BLINK_DURATION <- gsub(",", ".", df2$AVERAGE_BLINK_DURATION)
 df2$AVERAGE_FIXATION_DURATION <- gsub(",", ".", df2$AVERAGE_FIXATION_DURATION)
 df2$DURATION <- as.numeric(df2$DURATION)
@@ -140,5 +140,62 @@ DescTools::Median(B02$FIXATION_COUNT) # 61
 DescTools::Median(B03$FIXATION_COUNT) # 67
 DescTools::Median(B04$FIXATION_COUNT) # 58
 
+# Individual histograms for Blink Count
+hist(B01$BLINK_COUNT, breaks = 4, xlab = "Blink Count (B01)", main = "Visualization for Blink Count", col = "darkmagenta")
+hist(B02$BLINK_COUNT, breaks = 4, xlab = "Blink Count (B02)", main = "Visualization for Blink Count", col = "darkmagenta")
+hist(B03$BLINK_COUNT, breaks = 4, xlab = "Blink Count (B03)", main = "Visualization for Blink Count", col = "darkmagenta")
+hist(B04$BLINK_COUNT, breaks = 4, xlab = "Blink Count (B04)", main = "Visualization for Blink Count", col = "darkmagenta")
 
+#fixation count, individual too.
+
+hist(B01$FIXATION_COUNT, breaks = 4, xlab = "Fixation Count (B01)", main = "Visualization for Fixation Count", col = "darkgreen") # Normally distributed?
+hist(B02$FIXATION_COUNT, breaks = 4, xlab = "Fixation Count (B02)", main = "Visualization for Fixation Count", col = "darkgreen")
+hist(B03$FIXATION_COUNT, breaks = 4, xlab = "Fixation Count (B03)", main = "Visualization for Fixation Count", col = "darkgreen")
+hist(B04$FIXATION_COUNT, breaks = 4, xlab = "Fixation Count (B04)", main = "Visualization for Fixation Count", col = "darkgreen") # Normally distributed?
+
+mdl = lm(B01$FIXATION_COUNT~B01$BLINK_COUNT, data=QQs)
+summary(mdl)
+
+
+
+
+qqnorm(B01$FIXATION_COUNT, main = "Q-Q Plot for Normality Fixation Count (B01)", col = "darkgreen")
+qqline(B01$FIXATION_COUNT, col = "darkred", lwd = 1, lty = 1) #median = 63 
+
+DescTools::Mean(B01$FIXATION_COUNT) #Mean 61.46 (rounded to second place)
+
+qqnorm(B04$FIXATION_COUNT, main = "Q-Q Plot for Normality Fixation Count (B04)", col = "hotpink")
+qqline(B04$FIXATION_COUNT, col = "darkblue", lwd = 1, lty = 1) # median = 58
+
+DescTools::Mean(B04$FIXATION_COUNT) #mean = 58.53 #SOOOOOO CLOOOOOSE!
+
+# Compare IA_Fixation_Count values and Fixation_count values in scatterplots. 
+
+df2$IA_FIXATION_COUNT <- as.numeric(df2$IA_FIXATION_COUNT)
+B01$IA_FIXATION_COUNT <- as.numeric(B01$IA_FIXATION_COUNT)
+
+View(B01)
+
+hist(B01$IA_FIXATION_COUNT, breaks = 4, xlab = "AOI Fixation Count", main = "Visualization for AOI Fixation Count (B01)", col = "green")
+hist(B02$IA_FIXATION_COUNT, breaks = 4, xlab = "AOI Fixation Count", main = "Visualization for AOI Fixation Count (B02)", col = "green")
+hist(B03$IA_FIXATION_COUNT, breaks = 4, xlab = "AOI Fixation Count", main = "Visualization for AOI Fixation Count (B03)", col = "green")
+hist(B04$IA_FIXATION_COUNT, breaks = 4, xlab = "AOI Fixation Count", main = "Visualization for AOI Fixation Count (B04)", col = "green")
+
+qqnorm(B03$IA_FIXATION_COUNT, main = "Q-Q Plot for Normality AOI Fixation Count (B03)", col = "darkred")
+qqline(B03$IA_FIXATION_COUNT, col = "darkblue", lwd = 1, lty = 1) #median = 63 
+
+DescTools::Median(B03$IA_FIXATION_COUNT) # 34
+DescTools::Mean(B03$IA_FIXATION_COUNT) # 35.38
+
+plot(B01$IA_FIXATION_COUNT, col = "darkmagenta", main = "AOI Fixation Counts (B01)", xlab = "", ylab = "")
+plot(B01$FIXATION_COUNT, col = "darkmagenta", main = "Fixation Counts (B01)", xlab = "", ylab = "")
+
+plot(B02$IA_FIXATION_COUNT)
+plot(B02$FIXATION_COUNT)
+
+plot(B03$IA_FIXATION_COUNT)
+plot(B03$FIXATION_COUNT)
+
+plot(B04$IA_FIXATION_COUNT)
+plot(B04$FIXATION_COUNT)
 
